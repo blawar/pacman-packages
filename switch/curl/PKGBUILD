@@ -9,7 +9,7 @@ url='http://www.zlib.net/'
 license=('zlib')
 options=(!strip libtool staticlibs)
 depends=('switch-zlib' 'switch-mbedtls')
-makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+makedepends=('switch-pkg-config' 'dkp-meson-scripts')
 source=("https://curl.haxx.se/download/curl-${pkgver}.tar.gz")
 groups=('switch-portlibs')
 
@@ -28,8 +28,10 @@ build() {
   ./configure --prefix=$PORTLIBS_PREFIX --host=aarch64-none-elf \
     --disable-shared --enable-static --disable-ipv6 --disable-unix-sockets \
     --disable-manual --disable-ntlm-wb --disable-threaded-resolver \
-	--without-ssl --with-mbedtls --with-libssh2 \
-	LIBS="$LIBS -lmbedtls -lmbedx509 -lmbedcrypto" CFLAGS="$CFLAGS $CPPFLAGS -I/opt/devkitpro/libnx/include/"
+    --without-ssl --with-mbedtls --with-libssh2 \
+	CFLAGS="$CFLAGS $CPPFLAGS -I/opt/devkitpro/libnx/include/" \
+  LDFLAGS="-specs=$DEVKITPRO/libnx/switch.specs -Wl,--no-undefined -Wl,--gc-sections -L/opt/devkitpro/libnx/lib -L/opt/devkitpro/portlibs/switch/lib" \
+  LIBS="-lnx -lmbedtls -lmbedx509 -lmbedcrypto" CFLAGS="$CFLAGS $CPPFLAGS -I/opt/devkitpro/libnx/include/"
 
   patch -p1 -i ../../curl_config.patch
   
