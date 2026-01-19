@@ -10,7 +10,7 @@ license=('(L)GPL')
 options=(!strip libtool staticlibs)
 source=(${pkgname}::"git+https://github.com/sahlberg/libsmb2.git#commit=aef1888f0f04bb41a38262d3388d7b673e48a1ed")
 sha256sums=('SKIP')
-makedepends=('git' 'switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+makedepends=('git' 'switch-pkg-config' 'dkp-meson-scripts')
 groups=('switch-portlibs')
 
 pkgver() {
@@ -38,6 +38,11 @@ build() {
   autoheader
   automake --add-missing
   autoconf
+
+  export CFLAGS="-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIC -ftls-model=local-exec -O2 -ffunction-sections -fdata-sections -Wno-array-parameter -Wno-old-style-definition"
+  export CPPFLAGS="-D__SWITCH__ -I/opt/devkitpro/libnx/include -I/opt/devkitpro/portlibs/switch/include"
+  export LDFLAGS="-specs=/opt/devkitpro/libnx/switch.specs -L/opt/devkitpro/libnx/lib -L/opt/devkitpro/portlibs/switch/lib -Wl,--no-undefined -Wl,--gc-sections"
+  export LIBS="-lnx"
 
   ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
     --disable-shared --enable-static --without-libkrb5
