@@ -1,0 +1,4 @@
+--- a/lib/curl_config.h	Thu Jun 20 09:19:20 2019
++++ b/lib/curl_config_new.h	Thu Jun 20 09:09:00 2019
+@@ -602,0 +603 @@
++#define HAVE_SOCKET 1
